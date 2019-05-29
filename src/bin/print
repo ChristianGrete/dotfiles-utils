@@ -1,19 +1,24 @@
-#!/bin/sh
+#!/bin/sh -eu
 
-# Require any operand to be specified
-if [ $# -eq 0 -o "$*" = '--' ]; then
-  printf '%s\n' "$(cat <<EOF
-usage: print [-f format_string] [--] [string ...]
-       print [--format format_string] [--] [string ...]
-       print [--format=format_string] [--] [string ...]
+usage="$(cat <<EOF
+usage: print [-w|--wrap] [-f format_string] [--] [string ...]
+       print [-w|--wrap] [--format format_string] [--] [string ...]
+       print [-w|--wrap] [--format=format_string] [--] [string ...]
 EOF
-)" >&2
+)"
+
+raise_usage_err () {
+  printf '%s\n' "$usage" >&2
 
   exit 2
-fi
+}
 
-# Define a default "format" value
+# Require any operand to be specified
+test $# -eq 0 -o "$*" = '--' && raise_usage_err
+
+# Define a default option values
 FORMAT='%s'
+WRAP='off'
 
 raise_arg_err() {
   printf 'print: option requires an argument -- %s\n' "$*" >&2
@@ -32,7 +37,7 @@ validate_arg () {
 }
 
 # Support both short-options and GNU-style long-options
-while getopts ':-:f:' opt; do
+while getopts ':-:f:w' opt; do
   case "$opt" in
     # Parse any long-option that has been specified
     '-')
@@ -59,6 +64,9 @@ while getopts ':-:f:' opt; do
           validate_arg "${OPTARG%%'='*}" "$FORMAT"
         ;;
 
+        # Enable text wrapping when "wrap" long-option is specified
+        'wrap') WRAP='on' ;;
+
         # Raise an error when an unknown long-option has been specified
         *) raise_opt_err "${OPTARG%%'='*}"
       esac
@@ -74,23 +82,31 @@ while getopts ':-:f:' opt; do
       validate_arg "$opt" "$FORMAT"
     ;;
 
+    # Enable text wrapping when "wrap" short-option is specified
+    'w') WRAP='on' ;;
+
     # Raise an error when an unknown short-option has been specified
     *) raise_opt_err "$OPTARG"
   esac
 done
 
 readonly FORMAT
+readonly WRAP
 
 # Remove parsed options from positional parameters
 shift $(($OPTIND - 1))
 
+test $# -eq 0 && raise_usage_err
+
 unset -f 'raise_arg_err'
 unset -f 'raise_opt_err'
+unset -f 'raise_usage_err'
 unset -f 'validate_arg'
 unset -v 'opt'
+unset -v 'usage'
 
-# Write to standard stream
-if [ -t 1 -o -t 2 ]; then
+# Only try to wrap when the standard output stream is connected to a terminal
+if [ "$WRAP" = 'on' -a -t 1 ]; then
   readonly WRAP_COLUMN=${COLUMNS:-$(tput cols > '/dev/null' 2>&1 && tput cols)}
 
   if test $WRAP_COLUMN -gt 0 2> '/dev/null'; then
@@ -99,5 +115,5 @@ if [ -t 1 -o -t 2 ]; then
   fi
 fi
 
-# Or, write to anything else (e.g. to a file)
+# Otherwise, ignore the "wrap" option
 printf "$FORMAT" "$@" 2> '/dev/null'
