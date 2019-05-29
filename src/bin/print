@@ -1,0 +1,103 @@
+#!/bin/sh
+
+# Require any operand to be specified
+if [ $# -eq 0 -o "$*" = '--' ]; then
+  printf '%s\n' "$(cat <<EOF
+usage: print [-f format_string] [--] [string ...]
+       print [--format format_string] [--] [string ...]
+       print [--format=format_string] [--] [string ...]
+EOF
+)" >&2
+
+  exit 2
+fi
+
+# Define a default "format" value
+FORMAT='%s'
+
+raise_arg_err() {
+  printf 'print: option requires an argument -- %s\n' "$*" >&2
+
+  exit 1
+}
+
+raise_opt_err () {
+  printf 'print: illegal option -- %s\n' "$*" >&2
+
+  exit 2
+}
+
+validate_arg () {
+  test ! -z "$2" || raise_arg_err "$1"
+}
+
+# Support both short-options and GNU-style long-options
+while getopts ':-:f:' opt; do
+  case "$opt" in
+    # Parse any long-option that has been specified
+    '-')
+      case "$OPTARG" in
+        # Stop parsing the options when `--` is specified
+        '') break ;;
+
+        # Raise an error when an option-argument has been specified for `--`
+        '='*) raise_opt_err '-' ;;
+
+        # Parse the "format" long-option separated by white space characters
+        'format')
+          eval "FORMAT=\"\${$OPTIND:-}\""
+
+          validate_arg "$OPTARG" "$FORMAT"
+
+          OPTIND=$(($OPTIND + 1))
+        ;;
+
+        # Parse the "format" long-option separated by an equal sign
+        'format='*)
+          FORMAT="${OPTARG#*'='}"
+
+          validate_arg "${OPTARG%%'='*}" "$FORMAT"
+        ;;
+
+        # Raise an error when an unknown long-option has been specified
+        *) raise_opt_err "${OPTARG%%'='*}"
+      esac
+    ;;
+
+    # Raise an error when any required short-option argument is missing
+    ':') raise_arg_err "$OPTARG" ;;
+
+    # Parse the "format" short-option
+    'f')
+      FORMAT="$OPTARG"
+
+      validate_arg "$opt" "$FORMAT"
+    ;;
+
+    # Raise an error when an unknown short-option has been specified
+    *) raise_opt_err "$OPTARG"
+  esac
+done
+
+readonly FORMAT
+
+# Remove parsed options from positional parameters
+shift $(($OPTIND - 1))
+
+unset -f 'raise_arg_err'
+unset -f 'raise_opt_err'
+unset -f 'validate_arg'
+unset -v 'opt'
+
+# Write to standard stream
+if [ -t 1 -o -t 2 ]; then
+  readonly WRAP_COLUMN=${COLUMNS:-$(tput cols > '/dev/null' 2>&1 && tput cols)}
+
+  if test $WRAP_COLUMN -gt 0 2> '/dev/null'; then
+    printf "$FORMAT" "$@" 2> '/dev/null' \
+      | fold -sw $WRAP_COLUMN 2> '/dev/null' && exit
+  fi
+fi
+
+# Or, write to anything else (e.g. to a file)
+printf "$FORMAT" "$@" 2> '/dev/null'
