@@ -1,4 +1,7 @@
 #!/bin/sh -eu
+#
+# Better print formatted output
+#
 
 usage="$(cat <<EOF
 usage: print [-w|--wrap] [-f format_string] [--] [string ...]
@@ -16,7 +19,7 @@ raise_usage_err () {
 # Require any operand to be specified
 test $# -eq 0 -o "$*" = '--' && raise_usage_err
 
-# Define a default option values
+# Define default option values
 FORMAT='%s'
 WRAP='off'
 
@@ -64,7 +67,7 @@ while getopts ':-:f:w' opt; do
           validate_arg "${OPTARG%%'='*}" "$FORMAT"
         ;;
 
-        # Enable text wrapping when "wrap" long-option is specified
+        # Enable text wrapping when the "wrap" long-option is specified
         'wrap') WRAP='on' ;;
 
         # Raise an error when an unknown long-option has been specified
@@ -82,7 +85,7 @@ while getopts ':-:f:w' opt; do
       validate_arg "$opt" "$FORMAT"
     ;;
 
-    # Enable text wrapping when "wrap" short-option is specified
+    # Enable text wrapping when the "wrap" short-option is specified
     'w') WRAP='on' ;;
 
     # Raise an error when an unknown short-option has been specified
