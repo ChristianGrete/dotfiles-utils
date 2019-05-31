@@ -8,6 +8,22 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[*.rst]
+indent_size = 4
+indent_style = tab
+
+[.editorconfig]
+indent_size = 4
+indent_style = tab
+
+[.gitmodules]
+indent_size = 4
+indent_style = tab
+
+[.tm_properties]
+indent_size = 4
+indent_style = tab
+
 [Makefile]
 indent_size = 4
 indent_style = tab
