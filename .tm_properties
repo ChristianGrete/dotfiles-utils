@@ -1,0 +1,89 @@
+TM_MAKE_FILE = "${CWD}/Makefile"
+
+binary = "{,${CWD}/{,dist/**/*}}"
+encoding = "UTF-8"
+exclude = "{.{DS_Store},}"
+excludeInFileChooser = "{build,dist,vendor}"
+excludeInFolderSearch = "{build,dist,vendor}"
+include = "{*,.{dockerignore,editorconfig,git{,ignore,message,modules},tm_properties,travis.yml}}"
+lineEndings = "\n"
+projectDirectory = "$CWD"
+projectName = "github.com/ChristianGrete/dotfiles-utils"
+softTabs = true
+tabSize = 2
+useBOM = true
+windowTitle = "${projectName}${TM_FILEPATH:? — ${TM_FILEPATH/${projectDirectory}\///}:${TM_DISPLAYNAME:+ — $TM_DISPLAYNAME}}${TM_SCM_BRANCH:+ ($TM_SCM_BRANCH)}"
+wrapColumn = 80
+
+[ attr.untitled ]
+fileType = text.plain
+
+[ source.git-config ]
+softTabs = false
+tabSize = 4
+
+[ source.makefile ]
+softTabs = false
+tabSize = 4
+
+[ source.tm-properties ]
+softTabs = false
+tabSize = 4
+wrapColumn = "Use Window Frame"
+
+[ text ]
+softTabs = false
+spellChecking = true
+spellingLanguage = "en"
+tabSize = 4
+
+[ text.active4d-ini ]
+softTabs = false
+tabSize = 4
+
+[ text.git-commit ]
+disableExtendedAttributes = true
+spellChecking = true
+spellingLanguage = "en"
+
+[ text.plain ]
+softTabs = false
+spellChecking = true
+spellingLanguage = "en"
+tabSize = 4
+
+[ text.restructuredtext ]
+softTabs = false
+spellChecking = true
+spellingLanguage = "en"
+tabSize = 4
+
+[ "${PWD}/.editorconfig" ]
+fileType = text.active4d-ini
+
+[ "${PWD}/.gitmodules" ]
+fileType = source.git-config
+
+[ "${PWD}/.tm_properties" ]
+fileType = source.tm-properties
+
+[ "${PWD}/.travis.yml" ]
+fileType = source.yaml
+
+[ "${PWD}/Dockerfile" ]
+fileType = source.dockerfile
+
+[ "${PWD}/Makefile" ]
+fileType = source.makefile
+
+[ "${PWD}/{.{dockerignore,git{ignore,message}},CODEOWNERS,LICENSE}" ]
+fileType = text.plain
+
+[ "*.rst" ]
+fileType = text.restructuredtext
+
+[ "{*.sh,{bin,libexec}/*}" ]
+fileType = source.shell
+
+[ "{{COMMIT_EDIT,MERGE_}MSG}" ]
+fileType = text.git-commit
