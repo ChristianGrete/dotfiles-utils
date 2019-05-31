@@ -52,25 +52,25 @@ spellChecking = true
 spellingLanguage = "en"
 tabSize = 4
 
-[ "${PWD}/.editorconfig" ]
+[ "${CWD}/.editorconfig" ]
 fileType = text.active4d-ini
 
-[ "${PWD}/.gitmodules" ]
+[ "${CWD}/.gitmodules" ]
 fileType = source.git-config
 
-[ "${PWD}/.tm_properties" ]
+[ "${CWD}/.tm_properties" ]
 fileType = source.tm-properties
 
-[ "${PWD}/.travis.yml" ]
+[ "${CWD}/.travis.yml" ]
 fileType = source.yaml
 
-[ "${PWD}/Dockerfile" ]
+[ "${CWD}/Dockerfile" ]
 fileType = source.dockerfile
 
-[ "${PWD}/Makefile" ]
+[ "${CWD}/Makefile" ]
 fileType = source.makefile
 
-[ "${PWD}/{.{dockerignore,git{ignore,message}},CODEOWNERS,LICENSE}" ]
+[ "${CWD}/{.{dockerignore,git{ignore,message}},CODEOWNERS,LICENSE}" ]
 fileType = text.plain
 
 [ "*.rst" ]
