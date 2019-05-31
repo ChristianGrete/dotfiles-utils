@@ -1,4 +1,6 @@
 TM_MAKE_FILE = "${CWD}/Makefile"
+TM_MAKE_RUN_TARGET = "test"
+TM_MAKE_TARGET = "build"
 
 binary = "{,${CWD}/{,dist/**/*}}"
 encoding = "UTF-8"
