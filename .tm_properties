@@ -31,12 +31,6 @@ softTabs = false
 tabSize = 4
 wrapColumn = "Use Window Frame"
 
-[ text ]
-softTabs = false
-spellChecking = true
-spellingLanguage = "en"
-tabSize = 4
-
 [ text.active4d-ini ]
 softTabs = false
 tabSize = 4
